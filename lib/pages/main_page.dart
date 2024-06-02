@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_finder/models/movie.dart';
 import 'package:movie_finder/models/search_category.dart';
+import 'package:movie_finder/widgets/movie_tile.dart';
 
 // ignore: must_be_immutable
 class MainPage extends ConsumerWidget {
@@ -21,6 +23,7 @@ class MainPage extends ConsumerWidget {
 
   Widget _buildUI() {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
       body: SizedBox(
         width: _deviceWidth,
@@ -66,13 +69,20 @@ class MainPage extends ConsumerWidget {
   Widget _foregroundWidgets() {
     return Container(
       padding: EdgeInsets.fromLTRB(0, 0, 0, _deviceHeight! * 0.02),
-      width: _deviceHeight! * 0.88,
+      width: _deviceWidth! * 0.88,
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildTopBar(),
+          Container(
+            height: _deviceHeight! * 0.83,
+            padding: EdgeInsets.symmetric(
+              vertical: _deviceHeight! * 0.01,
+            ),
+            child: _movieListViewWidget(),
+          )
         ],
       ),
     );
@@ -168,5 +178,55 @@ class MainPage extends ConsumerWidget {
         color: Colors.white24,
       ),
     );
+  }
+
+  Widget _movieListViewWidget() {
+    final List<Movie> _movies = [];
+
+    for (var i = 0; i < 20; i++) {
+      _movies.add(
+        Movie(
+          name: "Interstellar",
+          language: "English",
+          isAdult: false,
+          description:
+              "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
+          posterPath:
+              "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+          backdropPath:
+              "https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
+          rating: 8,
+          releaseDate: "2014-11-07",
+        ),
+      );
+    }
+
+    if (_movies.isNotEmpty) {
+      return ListView.builder(
+        itemCount: _movies.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: _deviceHeight! * 0.01,
+              horizontal: 0,
+            ),
+            child: GestureDetector(
+              onTap: () {},
+              child: MovieTile(
+                height: _deviceHeight! * 0.20,
+                width: _deviceWidth! * 0.85,
+                movie: _movies[index],
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      );
+    }
   }
 }
