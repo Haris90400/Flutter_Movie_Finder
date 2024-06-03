@@ -2,15 +2,26 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:movie_finder/controller/main_page_data_controller.dart';
+import 'package:movie_finder/models/main_page_data.dart';
 import 'package:movie_finder/models/movie.dart';
 import 'package:movie_finder/models/search_category.dart';
 import 'package:movie_finder/widgets/movie_tile.dart';
+
+final MainPageDataProvider =
+    StateNotifierProvider<MainPageDataController, MainPageData>(
+  (ref) {
+    return MainPageDataController();
+  },
+);
 
 // ignore: must_be_immutable
 class MainPage extends ConsumerWidget {
   double? _deviceHeight;
   double? _deviceWidth;
   TextEditingController? _searchFieldController;
+  MainPageDataController? _mainPageDataController;
+  MainPageData? _mainPageData;
   MainPage({Key? key}) : super(key: key);
 
   @override
@@ -18,6 +29,12 @@ class MainPage extends ConsumerWidget {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
     _searchFieldController = TextEditingController();
+    _mainPageDataController = ref.watch(
+      MainPageDataProvider.notifier,
+    );
+    _mainPageData = ref.watch(
+      MainPageDataProvider,
+    );
     return _buildUI();
   }
 
@@ -181,25 +198,7 @@ class MainPage extends ConsumerWidget {
   }
 
   Widget _movieListViewWidget() {
-    final List<Movie> _movies = [];
-
-    for (var i = 0; i < 20; i++) {
-      _movies.add(
-        Movie(
-          name: "Interstellar",
-          language: "English",
-          isAdult: false,
-          description:
-              "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-          posterPath:
-              "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
-          backdropPath:
-              "https://image.tmdb.org/t/p/w1280/xJHokMbljvjADYdit5fK5VQsXEG.jpg",
-          rating: 8,
-          releaseDate: "2014-11-07",
-        ),
-      );
-    }
+    final List<Movie> _movies = _mainPageData!.movies;
 
     if (_movies.isNotEmpty) {
       return ListView.builder(

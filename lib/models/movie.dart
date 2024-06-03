@@ -9,7 +9,7 @@ class Movie {
   final String description;
   final String posterPath;
   final String backdropPath;
-  final int rating;
+  final double rating;
   final String releaseDate;
   Movie({
     required this.name,
@@ -37,6 +37,6 @@ class Movie {
 
   String posterUrl() {
     final AppConfig _appConfig = GetIt.instance.get<AppConfig>();
-    return '${_appConfig.BASE_API_URL}${this.posterPath}';
+    return '${_appConfig.BASE_IMAGE_API_URL}${this.posterPath}';
   }
 }

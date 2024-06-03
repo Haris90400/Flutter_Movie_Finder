@@ -42,6 +42,7 @@ class _SplashPageState extends State<SplashPage> {
         BASE_API_URL: configData['BASE_API_URL'],
         BASE_IMAGE_API_URL: configData['BASE_IMAGE_API_URL'],
         API_KEY: configData['API_KEY'],
+        authorizationToekn: configData['Authorization'],
       ),
     );
 

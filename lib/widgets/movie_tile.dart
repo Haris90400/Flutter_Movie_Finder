@@ -25,7 +25,7 @@ class MovieTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _moviePosterWidget(
-            movie.posterPath,
+            movie.posterUrl(),
           ),
           _movieInfo(),
         ],
@@ -74,10 +74,10 @@ class MovieTile extends StatelessWidget {
                 ),
               ),
               Text(
-                movie.rating.toString(),
+                movie.rating.toStringAsFixed(1),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 18,
                 ),
               ),
             ],
@@ -85,21 +85,23 @@ class MovieTile extends StatelessWidget {
           Padding(
             padding: EdgeInsets.fromLTRB(0, height * 0.02, 0, 0),
             child: Text(
-              '${movie.language.toUpperCase()} | R: ${movie.isAdult} | ${movie.releaseDate},',
+              '${movie.language.toUpperCase()} | R: ${movie.isAdult} | ${movie.releaseDate}',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, height * 0.07, 0, 0),
-            child: Text(
-              movie.description,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 10,
+          Expanded(
+            child: Container(
+              // Remove or adjust the top padding
+              padding: EdgeInsets
+                  .zero, // Or EdgeInsets.fromLTRB(0, height * 0.02, 0, 0),
+              child: Text(
+                movie.description,
+                maxLines: null,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white70, fontSize: 10),
               ),
             ),
           ),

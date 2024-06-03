@@ -8,7 +8,9 @@ void main() {
     SplashPage(
       onInitializationComplete: () {
         return runApp(
-          ProviderScope(child: MyApp()),
+          ProviderScope(
+            child: MyApp(),
+          ),
         );
       },
     ),
@@ -18,7 +20,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Movie Finder",
