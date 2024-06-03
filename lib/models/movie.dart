@@ -7,17 +7,18 @@ class Movie {
   final String language;
   final bool isAdult;
   final String description;
-  final String posterPath;
-  final String backdropPath;
+  final String? posterPath; // Made posterPath nullable
+  final String? backdropPath; // Made backdropPath nullable
   final double rating;
   final String releaseDate;
+
   Movie({
     required this.name,
     required this.language,
     required this.isAdult,
     required this.description,
-    required this.posterPath,
-    required this.backdropPath,
+    this.posterPath, // Made posterPath nullable
+    this.backdropPath, // Made backdropPath nullable
     required this.rating,
     required this.releaseDate,
   });
@@ -28,8 +29,8 @@ class Movie {
       language: _json['original_language'],
       isAdult: _json['adult'],
       description: _json['overview'],
-      posterPath: _json['poster_path'],
-      backdropPath: _json['backdrop_path'],
+      posterPath: _json['poster_path'], // Assign nullable value
+      backdropPath: _json['backdrop_path'], // Assign nullable value
       rating: _json['vote_average'],
       releaseDate: _json['release_date'],
     );
@@ -37,6 +38,8 @@ class Movie {
 
   String posterUrl() {
     final AppConfig _appConfig = GetIt.instance.get<AppConfig>();
-    return '${_appConfig.BASE_IMAGE_API_URL}${this.posterPath}';
+    return posterPath != null
+        ? '${_appConfig.BASE_IMAGE_API_URL}$posterPath'
+        : ''; // Return an empty string if posterPath is null
   }
 }
