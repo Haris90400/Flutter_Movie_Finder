@@ -21,21 +21,36 @@ StateProvider<String> selectedMoviePosterUrlProvider =
   return _movies.isNotEmpty ? _movies[0].posterUrl() : '';
 });
 
-// ignore: must_be_immutable
-class MainPage extends ConsumerWidget {
-  double? _deviceHeight;
-  double? _deviceWidth;
-  String? _selectedMoviePosterUrl;
-  TextEditingController? _searchFieldController;
-  MainPageDataController? _mainPageDataController;
-  MainPageData? _mainPageData;
+class MainPage extends ConsumerStatefulWidget {
   MainPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends ConsumerState<MainPage> {
+  double? _deviceHeight;
+  double? _deviceWidth;
+  TextEditingController? _searchFieldController;
+  MainPageDataController? _mainPageDataController;
+  MainPageData? _mainPageData;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchFieldController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchFieldController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     _deviceHeight = MediaQuery.of(context).size.height;
     _deviceWidth = MediaQuery.of(context).size.width;
-    _searchFieldController = TextEditingController();
     _mainPageDataController = ref.watch(
       MainPageDataProvider.notifier,
     );
@@ -45,12 +60,12 @@ class MainPage extends ConsumerWidget {
 
     _searchFieldController!.text = _mainPageData!.searchText;
 
-    _selectedMoviePosterUrl = ref.watch(selectedMoviePosterUrlProvider);
+    final _selectedMoviePosterUrl = ref.watch(selectedMoviePosterUrlProvider);
 
-    return _buildUI();
+    return _buildUI(_selectedMoviePosterUrl);
   }
 
-  Widget _buildUI() {
+  Widget _buildUI(String? selectedMoviePosterUrl) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.black,
@@ -60,7 +75,7 @@ class MainPage extends ConsumerWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            _backgroundWidget(),
+            _backgroundWidget(selectedMoviePosterUrl),
             _foregroundWidgets(),
           ],
         ),
@@ -68,7 +83,7 @@ class MainPage extends ConsumerWidget {
     );
   }
 
-  Widget _backgroundWidget() {
+  Widget _backgroundWidget(String? selectedMoviePosterUrl) {
     return Container(
       height: _deviceHeight,
       width: _deviceWidth,
@@ -76,7 +91,7 @@ class MainPage extends ConsumerWidget {
         borderRadius: BorderRadius.circular(10.0),
         image: DecorationImage(
           image: NetworkImage(
-            _selectedMoviePosterUrl!,
+            selectedMoviePosterUrl!,
           ),
           fit: BoxFit.cover,
         ),
@@ -143,7 +158,7 @@ class MainPage extends ConsumerWidget {
       child: TextField(
         controller: _searchFieldController,
         onSubmitted: (value) {
-          print("Befor: $value");
+          print("Before: $value");
           _mainPageDataController!.updateTextSearch(value);
           print("After: ${_mainPageData!.searchText}");
         },
@@ -244,7 +259,9 @@ class MainPage extends ConsumerWidget {
               ),
               child: GestureDetector(
                 onTap: () {
-                  print(_selectedMoviePosterUrl);
+                  ref.read(selectedMoviePosterUrlProvider.notifier).state =
+                      _movies[index].posterUrl();
+                  print(_movies[index].posterUrl());
                 },
                 child: MovieTile(
                   height: _deviceHeight! * 0.20,
